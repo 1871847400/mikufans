@@ -81,10 +81,12 @@ https://git-scm.com/
 
 ```bash
 #添加id为1001的用户,docker容器默认使用该账号
-sudo useradd miku id:1001
-#在根目录创建必要目录,将拥有者改为1001
-sudo -u miku mkdir /mikufans /data /repo
-#切换用户到1001
+useradd -u 1001 miku
+#在根目录创建必要目录(需要root身份)
+mkdir /mikufans /data /repo
+#将拥有者改为1001
+chown 1001 /mikufans /data /repo
+#切换用户到1001(重要)
 su miku
 #拉取本项目 或 将项目解压后放入根目录即可
 git clone https://gitee.com/t_tgl/mikufans
@@ -122,7 +124,7 @@ cd /mikufans && ./startup.sh
 
 #### 2.配置文件
 
-mikufans-system/mikufans-core/src/main/resources/config/application-dev.yml
+`mikufans-system/mikufans-core/src/main/resources/config/application-dev.yml`
 
 将文件保存路径改为自己电脑的路径
 
