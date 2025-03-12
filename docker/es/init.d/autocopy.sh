@@ -1,0 +1,1 @@
+cp /docker-entrypoint-initdb.d/IKAnalyzer.cfg.xml /opt/bitnami/elasticsearch/config/analysis-ik/IKAnalyzer.cfg.xml

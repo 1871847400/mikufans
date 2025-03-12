@@ -1,0 +1,7 @@
+app:
+  oss:
+    endpoint: oss-cn-chengdu.aliyuncs.com
+    region: cn-chengdu
+    accessKeyId: 
+    accessKeySecret: 
+    bucket-name: mikufans

@@ -1,0 +1,28 @@
+{
+  "number_of_shards": 1,
+  "number_of_replicas": 1,
+  "analysis": {
+    "analyzer": {
+      "text_analyzer": {
+        "tokenizer": "ik_max_word",
+        "filter": "py"
+      },
+      "completion_analyzer": {
+        "tokenizer": "keyword",
+        "filter": "py"
+      }
+    },
+    "filter": {
+      "py": {
+        "type": "pinyin",
+        "keep_full_pinyin": false,
+        "keep_joined_full_pinyin": true,
+        "keep_original": true,
+        "limit_first_letter_length": 16,
+        "remove_duplicated_term": true,
+        "none_chinese_pinyin_tokenize": false
+      }
+    }
+  }
+
+}

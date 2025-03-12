@@ -1,0 +1,96 @@
+@charset "utf-8";
+html.dark {
+  --bg-color-2: #777;
+  --bg-color-5: #ccc;
+  --bg0-active: #333;
+  --bg0-alpha: #303133cc;
+  --bg-color-2-hover: #555;
+  --text-color-1: #fff;
+  --text-color-2: #ddd;
+  --text-color-3: #bbb;
+
+  --grey: #fff;
+  --grey0: #f3f3f3;
+  --grey1: #ddd;
+  --grey2: #bbb;
+  --grey3: #999;
+  --bg0: #333;
+  --bg1: #666;
+  --bg2: #999;
+  --bg3: #ccc;
+}
+:root {
+  --bg-color-2: #f7f8f9;
+  --bg-color-5: #edecec;
+  --bg0-active: #ccc;
+  --bg0-alpha: #ffffffcc;
+  --bg-color-2-hover: #ddd;
+  --text-color-1: #333;
+  --text-color-2: #666;
+  --text-color-3: #bbb;
+
+  --main-color-pink: #fc8bab;
+  --blue-1: #2ab9ed;
+  --blue-2: #00a1d6;
+  --blue-1-hover: #5bcbf4;
+  --hover-blue: #5bcbf4;
+
+  --blue0: #2ab9ed;
+  --blue1: #00a1d6;
+  --blue2: #038dbb;
+  --blue0-hover: #51cff9;
+  --blue1-hover: #3ac4f2;
+  --pink0: #fc8bab;
+
+  --grey: #000;
+  --grey0: #333;
+  --grey1: #666;
+  --grey2: #999;
+  --grey3: #bbb;
+  --bg0: #fff;
+  --bg1: #f3f3f3;
+  --bg2: #e3e3e3;
+  --bg3: #c3c3c3;
+
+  .bg0 {
+    background-color: var(--bg0);
+  }
+  .bg1 {
+    background-color: var(--bg1);
+  }
+  .bg2 {
+    background-color: var(--bg2);
+  }
+  .bg3 {
+    background-color: var(--bg3);
+  }
+  .grey {
+    color: var(--grey);
+  }
+  .grey0 {
+    color: var(--grey0);
+  }
+  .grey1 {
+    color: var(--grey1);
+  }
+  .grey2 {
+    color: var(--grey2);
+  }
+  .grey3 {
+    color: var(--grey3);
+  }
+  .blue0 {
+    color: var(--blue0);
+  }
+  .blue1 {
+    color: var(--blue1);
+  }
+}
+
+html {
+  background-color: var(--bg0);
+  color: var(--grey0);
+}
+*::placeholder {
+  color: var(--grey2);
+}

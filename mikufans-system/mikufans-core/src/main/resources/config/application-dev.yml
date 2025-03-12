@@ -1,0 +1,35 @@
+app:
+  upload:
+    video:
+      path: E:/test/upload/video
+      uploading-path: E:/test/mikufans/uploading/video
+#      transfer:
+#        mode: NONE
+#        path: /Shares/mikufans-dev/video
+#        delete-on-success: false
+    audio:
+      path: E:/test/upload/audio
+      uploading-path: E:/test/mikufans/uploading/audio
+    image:
+      path: E:/test/upload/image
+      uploading-path: E:/test/mikufans/uploading/image
+  resource:
+    base-path: E:/test/mikufans/static
+    captcha-path: E:/test/mikufans/static/captcha-images
+
+server:
+  port: 8080
+
+logging:
+  file:
+    path: E:/test/logs
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/mikufans?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -1,0 +1,44 @@
+app:
+  upload:
+    video:
+      path: /data/video
+      uploading-path: /data/uploading/video
+      transfer:
+        mode: NONE
+        path: 
+        delete-on-success: false
+    audio:
+      path: /data/audio
+      uploading-path: /data/uploading/audio
+    image:
+      path: /data/image
+      uploading-path: /data/uploading/image
+  resource:
+    base-path: /static
+    captcha-path: /static/captcha-images
+
+server:
+  port: 8080
+
+logging:
+  file:
+    path: /data/logs
+
+spring:
+  datasource:
+    username: miku
+    password: 123456
+    url: jdbc:mysql://mysql-master/mikufans?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+  redis:
+    host: redis-master
+    port: 6379
+    password: 123456
+  elasticsearch:
+    uris: http://es-master:9200
+    username: elastic
+    password: 123456
+  rabbitmq:
+    host: rabbitmq-master
+    port: 5672
+    username: miku
+    password: 123456

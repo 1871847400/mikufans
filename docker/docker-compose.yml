@@ -1,0 +1,186 @@
+services:
+  mysql-master:
+    image: bitnami/mysql:8.0.40
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - "/data/mysql/data:/bitnami/mysql/data"
+      - "/data/mysql/logs:/bitnami/mysql/logs"
+      # 会和镜像生成的my.cnf合并
+      - "./mysql/my.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro"
+      # mysql初始化时执行,除非重建/bitnami/mysql/data才会再次调用
+      - "./mysql/init.db:/docker-entrypoint-initdb.d"
+      # 每次容器启动时调用
+      - "./mysql/start.db:/docker-entrypoint-startdb.d"
+    networks:
+      - mynetwork
+    environment:
+      TZ: Asia/Shanghai
+      ALLOW_EMPTY_PASSWORD: no
+      MYSQL_ROOT_PASSWORD: a40B10912f74C78a
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]  # 检查 MySQL 是否健康
+      interval: 10s  # 每10秒检查一次
+      timeout: 5s    # 每次检查的超时时间
+      retries: 5     # 连续失败5次后标记为不健康
+      start_period: 30s  # 容器启动后等待30秒开始检查
+  redis-master:
+    image: bitnami/redis:7.4.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "/data/redis/data:/bitnami/redis/data"
+    environment:
+      TZ: Asia/Shanghai
+      REDIS_PASSWORD: 123456
+      REDIS_PORT_NUMBER: 6379
+      REDIS_ALLOW_REMOTE_CONNECTIONS: yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mynetwork
+  es-master:
+    image: bitnami/elasticsearch:7.17.26
+    container_name: es
+    ports:
+      - "9200:9200"
+    volumes:
+      - "/data/es/data:/bitnami/elasticsearch/data"
+      - "./es/plugins:/bitnami/elasticsearch/plugins"
+      - "./es/init.d:/docker-entrypoint-initdb.d"
+      - "./es/config/jvm.options:/opt/bitnami/elasticsearch/config/jvm.options"
+      - "./es/config/keystore.jks:/opt/bitnami/elasticsearch/config/keystore.jks"
+      - "./es/config/truststore.jks:/opt/bitnami/elasticsearch/config/truststore.jks"
+      # es会启动失败,需要手动复制进去或在init.d中执行脚本
+      #- "./es/analysis-ik/IKAnalyzer.cfg.xml:/opt/bitnami/elasticsearch/config/analysis-ik/IKAnalyzer.cfg.xml"
+    environment:
+      TZ: Asia/Shanghai
+      ELASTICSEARCH_ENABLE_SECURITY: true
+      ELASTICSEARCH_KEYSTORE_PASSWORD: 123456
+      ELASTICSEARCH_TRUSTSTORE_PASSWORD: 123456
+      ELASTICSEARCH_KEYSTORE_LOCATION: /opt/bitnami/elasticsearch/config/keystore.jks
+      ELASTICSEARCH_TRUSTSTORE_LOCATION: /opt/bitnami/elasticsearch/config/truststore.jks
+      ELASTICSEARCH_ENABLE_REST_TLS: false
+      ELASTICSEARCH_SKIP_TRANSPORT_TLS: true #单节点时开启
+      ELASTICSEARCH_LOCK_ALL_MEMORY: true
+      ELASTICSEARCH_MAX_ALLOWED_MEMORY_PERCENTAGE: 40 #最大允许内存比,默认100
+      ELASTICSEARCH_HEAP_SIZE: 512m #最大堆内存,默认1024m
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -u elastic:123456 -f http://localhost:9200/_cat/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - mynetwork
+  # kibana:
+  #   image: bitnami/kibana:7.17.26
+  #   container_name: kibana
+  #   ports:
+  #     - "5601:5601"
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #     KIBANA_ELASTICSEARCH_URL: http://es-master:9200
+  #     KIBANA_HOST: 0.0.0.0
+  #     KIBANA_PORT_NUMBER: 5601
+  #     KIBANA_ELASTICSEARCH_PORT_NUMBER: 9200
+  #     KIBANA_PASSWORD: 123456
+  #     KIBANA_XPACK_SECURITY_ENCRYPTIONKEY: 90b90cee7ba665c9bf89014c0f3ec841
+  #   networks:
+  #     - mynetwork
+  #   depends_on:
+  #     es-master:
+  #       condition: service_healthy
+  # rabbitmq-master:
+  #   image: bitnami/rabbitmq:3.13.7
+  #   container_name: rabbitmq
+  #   ports:
+  #     - "15671:15671"
+  #     - "15672:15672"
+  #   volumes:
+  #     - "/data/rabbitmq/logs:/opt/bitnami/rabbitmq/var/log/rabbitmq"
+  #     - "/data/rabbitmq/data:/bitnami/rabbitmq/mnesia"
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #     RABBITMQ_USERNAME: miku
+  #     RABBITMQ_PASSWORD: 123456
+  #     RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: true #允许远程访问
+  #   networks:
+  #     - mynetwork
+  webview:
+    image: bitnami/node:22
+    container_name: webview
+    volumes:
+      - "../mikufans-webview:/app"
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - mynetwork
+    #workdir默认就是/app
+    command: "sh -c 'yarn && yarn build'"
+  backend-master:
+    build: ./backend
+    container_name: backend
+    #ports:
+    #  - "8080:8080"
+    #  - "8188:8188"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - "../mikufans-system:/app"
+      - "/data/backend:/data"
+      - "/repo/backend:/repo"
+      - "./backend/captcha-images:/static/captcha-images"
+      - "./backend/background:/static/background"
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - mynetwork
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -u admin:123456 -f http://localhost:8080/admin/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    pre_stop:
+      - command: curl -X POST -u admin:123456 -f http://localhost:8080/admin/actuator/shutdown
+    stop_grace_period: 60s #最多等待多久后才强制关闭,默认10s
+    depends_on:
+      mysql-master:
+        condition: service_healthy #在mysql健康后才启动
+      redis-master:
+        condition: service_healthy
+      es-master:
+        condition: service_healthy
+  nginx-master:
+    image: bitnami/nginx:1.27.4
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf:ro"
+      - "/data/nginx/logs:/opt/bitnami/nginx/logs"
+      - "../mikufans-webview/dist:/app/mikufans"
+      - "./nginx/error:/app/error"
+    depends_on:
+      backend-master:
+        condition: service_healthy
+        restart: true #后端重启后,nginx也重启,防止找不到服务
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+    name: mynetwork
+    external: false

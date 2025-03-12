@@ -1,0 +1,33 @@
+app:
+  token:
+    access:
+      duration: 10m
+      secret: fc256a51eaee4f1aa2514dcb32c80079
+    refresh:
+      duration: 30d
+      secret: e3188b31d0ca4cabb8d226e7170a8ba3
+    admin:
+      duration: 7d
+      secret: 4a5cbc4657bd4d30bc8a20b3fd46728b
+  upload:
+    video:
+      filesize: 500MB
+      encrypt: true
+      limit:
+        daily: 50
+        week: 200
+        total: 1000
+    image:
+      filesize: 5MB
+      limit:
+        daily: 200
+    audio:
+      filesize: 20MB
+      limit:
+        daily: 10
+        week: 50
+        total: 500
+  video:
+    coin:
+      initial-count: 10
+      harvest: 0.1

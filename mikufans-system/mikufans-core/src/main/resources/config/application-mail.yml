@@ -1,0 +1,21 @@
+spring:
+  mail:
+    host: smtp.qq.com
+    #端口 25 465
+    port: 465
+    #协议 smtp smtps
+    protocol: smtp
+    #邮箱
+    username: 
+    #授权码
+    password: 
+    default-encoding: utf-8
+    properties:
+      timeout: 10000
+      connection-timeout: 10000
+      write-timeout: 10000
+      mail:
+        smtp:
+          auth: true           # 启用认证
+          starttls.enable: true # 启用 TLS
+          ssl.enable: true      # 启用 SSL 加密

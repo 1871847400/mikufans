@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.tgl.mikufans.mapper.VideoStarMapper">
+    <select id="countUnique" parameterType="object" resultType="long">
+        select count(distinct c.user_id) from (
+            select user_id
+            from video_star as a
+            left join user_star as b
+            on a.star_id = b.id
+            where a.video_id = #{videoId}) as c
+    </select>
+</mapper>

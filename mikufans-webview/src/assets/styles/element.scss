@@ -1,0 +1,55 @@
+//此文件用于覆盖element-plus默认样式
+
+.el-popover {
+  --el-popover-padding: 0;
+  --el-popover-border-radius: 8px;
+  &.el-popper {
+    min-width: auto; //默认为150px
+  }
+}
+
+// el-popover 会影响这个的padding
+.el-popconfirm {
+  padding: 6px;
+}
+
+html .el-collapse-item__content {
+  // padding-bottom: unset;
+}
+
+.el-menu-item {
+  user-select: none;
+}
+
+.el-avatar > img {
+  width: 100%;
+  height: 100%;
+}
+
+.el-drawer {
+  --el-drawer-padding-primary: 0;
+}
+
+.el-message--error, .el-message--success, .el-message--warning {
+  --el-message-text-color: var(--grey1);
+}
+.el-message-icon--error {
+  --el-message-text-color: #ff3b30;
+}
+.el-message-icon--success {
+  --el-message-text-color: #67C23A;
+}
+.el-message-icon--warning {
+  --el-message-text-color: #e6a23c;
+}
+
+// 设置table的表头
+.el-table .el-table__fixed-header-wrapper th, 
+.el-table .el-table__header-wrapper th {
+  background-color: #f8f8f8;
+  color: var(--grey1);
+  height: 50px;
+  html.dark & {
+    background-color: var(--bg0);
+  }
+}

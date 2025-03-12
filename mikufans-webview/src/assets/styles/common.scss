@@ -1,0 +1,58 @@
+//绝对定位然后居中
+.abs-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+//限制文字行数
+@for $i from 1 through 10 {
+  .maxline-#{$i} {
+    word-break: break-word;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-break: anywhere;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: $i;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $i;
+  }
+}
+
+// 视口（包括纵向滚动条）的宽度
+@media screen and (max-width: 1300px) {
+  .hidden-xs {
+    display: none !important;
+  }
+}
+
+.app-text-btn {
+  user-select: none;
+  transition: color .3s;
+  cursor: pointer;
+  color: #00aeec;
+  &:hover {
+    color: #85d5f3;
+  }
+}
+
+.hoverable {
+  transition: color .3s;
+  cursor: pointer;
+  &:hover {
+    color: #85d5f3;
+  }
+}
+
+.color-rate {
+  color: #f7ba2a; //--el-rate-fill-color
+}

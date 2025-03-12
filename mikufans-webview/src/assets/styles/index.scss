@@ -1,0 +1,110 @@
+@import './theme.scss';
+@import './element.scss';
+@import './common.scss';
+
+:root {
+  //导航栏高度
+  --navbar-height: 64px;
+  //图片文字阴影,一般用于在图片上显示文字
+  --img-shadow: linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.00386607) 8.07%,rgba(0,0,0,.0152486) 15.54%,rgba(0,0,0,.033824) 22.5%,rgba(0,0,0,.0592687) 29.04%,rgba(0,0,0,.0912593) 35.26%,rgba(0,0,0,.129472) 41.25%,rgba(0,0,0,.173583) 47.1%,rgba(0,0,0,.22327) 52.9%,rgba(0,0,0,.278208) 58.75%,rgba(0,0,0,.338074) 64.74%,rgba(0,0,0,.402545) 70.96%,rgba(0,0,0,.471296) 77.5%,rgba(0,0,0,.544005) 84.46%,rgba(0,0,0,.620347) 91.93%,rgba(0,0,0,.7));
+}
+
+/* 媒体查询最小设备宽度,和浏览器是否缩放无关 */
+// 限制高于1100px设备的最小宽高
+@media screen and (min-device-width: 1100px) {
+  html, body { 
+    max-width: 2048px;
+    min-width: 1100px;
+  }
+}
+//响应宽度设置字体大小
+//布局使用REM单位(tailwindcss默认使用)
+@media screen and (max-width: 1400px) {
+  html {
+    font-size: 15px!important;
+  }
+}
+@media screen and (max-width: 1200px) {
+  html {
+    font-size: 14px!important;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+  /* width=内容宽度+内边距+边框 */
+  /* box-sizing: border-box;  */
+  &:focus {
+    outline: none; //使用tab键,切换焦点时默认会有外边框
+  }
+}
+html {
+  margin: 0 auto;
+  font-size: 16px !important; //设置默认字体大小,注意tailwind使用rem作为单位(且默认16px)
+  line-height: 1.25; //相对于文字大小的倍数,默认normal会取决于font-family(注意和tailwind保持一致)
+  overflow-x: auto; //超过窗口大小才显示滚动条
+  overflow-y: scroll; //垂直滚动条一直显示,防止页面大小变化时抖动
+  // overflow-y: overlay;  //虚拟滚动条,不占宽度,但window.scoll事件失效
+  // padding-right: 17px; //滚动条宽度
+}
+body {
+  font-family: system-ui, -apple-system, Helvetica Hel, Microsoft YaHei, Arial, sans-serif;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+i {
+  outline: none;
+}
+//强调内容,例如搜索匹配
+em {
+  color: #00aeec;
+  font-style: normal;
+}
+.iconfont {
+  // user-select: none;
+  // font-size: inherit; //优先级高过tailwind,应该直接在iconfont.css中注释font-size
+}
+img,svg,video,canvas,audio,iframe {
+  user-select: none;
+  display: block;
+}
+//去掉列表默认带的符号
+ol, ul {
+  list-style: none;
+}
+//全局表情设置
+img.emoji {
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: text-bottom;
+  display: inline-block;
+  user-select: auto;
+  cursor: default;
+  &[data-size='2'] {
+    width: 2.25em;
+    height: 2.25em;
+  }
+}
+// 谷歌浏览器滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+}
+body::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background-color: #0000004d;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #0003;
+  border-radius: 10px;
+  transition: all .2s;
+}
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}

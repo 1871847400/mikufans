@@ -1,0 +1,145 @@
+spring:
+  application:
+    name: @artifactId@
+  profiles:
+    #生产环境使用 -Dspring.profiles.active=def,prod
+    active: def,dev
+    group:
+      def:
+        - mail
+        - app
+        - socket
+        - oss
+      prod:
+        - prod
+      dev:
+        - dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  pid:
+    file: ./server.pid #linux下存储进程pid
+  # 配置ObjectMapper，只对默认注入的有效，new的不管用
+  jackson:
+    default-property-inclusion: non_null #值为null的字段不参与序列化
+    visibility:
+      FIELD: NONE #任何字段类型都不参与序列化
+      GETTER: PUBLIC_ONLY #公开的get方法才参与序列化
+      SETTER: PUBLIC_ONLY #公开set方法参与序列化
+      IS_GETTER: PUBLIC_ONLY #公开的is方法参与序列化
+    date-format: yyyy-MM-dd HH:mm:ss #日期序列化格式
+    time-zone: Asia/Shanghai #必须设置时区
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false #反序列化遇到未知属性不报错
+  servlet:
+    multipart:
+      enabled: true #开启文件上传功能
+      # nginx也需要设置 client_max_body_size: 2M;
+      max-file-size: 1MB #最大上传文件大小
+      max-request-size: 2MB #最大请求体大小
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    connect-timeout: 10s
+    timeout: 5s
+  cache:
+    type: redis
+    redis:
+      key-prefix: cache_
+      time-to-live: 1h
+      cache-null-values: false
+  elasticsearch:
+    uris: http://localhost:9200
+    username: elastic
+    password: 123456
+  task:
+    execution:
+      pool:
+        core-size: 2 #核心线程数
+        max-size: 3 #最大线程数
+        queue-capacity: 100 #队列大小
+      thread-name-prefix: app-task-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      type: simple
+      simple:
+        acknowledge-mode: auto #消息确认模式 没有异常则返回ack；抛出异常则返回nack
+        retry:
+          enabled: true #开启消费失败后重试
+          initial-interval: 2000ms #第一次失败后的等待时间
+          multiplier: 1 #等待时长倍数
+          max-attempts: 2 #最大尝试次数
+          stateless: false #如果业务包含事务设置false
+  lifecycle:
+    timeout-per-shutdown-phase: 30s #关闭服务器等待请求执行完成的超时时间
+
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ANT_PATH_MATCHER
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: null #逻辑已删除
+      logic-not-delete-value: 0 #逻辑未删除
+      id-type: auto #默认主键类型为自增
+    banner: false
+  configuration:
+    cache-enabled: true #开启二级缓存
+  type-handlers-package: pers.tgl.mikufans #类型转换器所在包
+
+mybatis-plus-join:
+  #是否打印 mybatis plus join banner 默认true
+  banner: false
+  #全局启用副表逻辑删除(默认true) 关闭后关联查询不会加副表逻辑删除
+  sub-table-logic: true
+  #拦截器MappedStatement缓存(默认true)
+  ms-cache: true
+  #表别名(默认 t)
+  table-alias: t
+  #副表逻辑删除条件的位置，支持where、on
+  #默认ON （1.4.7.2及之前版本默认为where）
+  logic-del-type: on
+# springboot默认使用logback
+logging:
+#  config: classpath:logback-spring.xml
+  charset:
+    console: UTF-8
+    file: UTF-8
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  level:
+    root: info
+    pers.tgl.mikufans.service: debug
+    pers.tgl.mikufans.test: error
+server:
+  tomcat:
+    # 连接超时
+    connection-timeout: 30s
+  error:
+    # 默认的错误显示页面,默认是/error
+    # error.html可以覆盖默认的页面
+    path: /error
+    whitelabel:
+      # 404跳转/error
+      enabled: true
+    include-message: always
+  #等待所有正在处理的请求完成后再关闭
+  shutdown: graceful
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        # 暴露所有端点,如: health,metrics,shutdown
+        include: "*"
+      base-path: /admin/actuator
