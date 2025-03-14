@@ -72,7 +72,7 @@ services:
       ELASTICSEARCH_MAX_ALLOWED_MEMORY_PERCENTAGE: 40 #最大允许内存比,默认100
       ELASTICSEARCH_HEAP_SIZE: 512m #最大堆内存,默认1024m
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -u elastic:123456 -f http://localhost:9200/_cat/health"]
+      test: ["CMD", "sh", "-c", "curl -u elastic:123456 http://localhost:9200/_cat/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -145,13 +145,13 @@ services:
     networks:
       - mynetwork
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -u admin:123456 -f http://localhost:8080/admin/actuator/health"]
+      test: ["CMD", "sh", "-c", "curl -u admin:123456 http://localhost:8080/admin/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 120s
     pre_stop:
-      - command: curl -X POST -u admin:123456 -f http://localhost:8080/admin/actuator/shutdown
+      - command: curl -X POST -u admin:123456 http://localhost:8080/admin/actuator/shutdown
     stop_grace_period: 60s #最多等待多久后才强制关闭,默认10s
     depends_on:
       mysql-master:
