@@ -73,6 +73,8 @@ ReactNative (开发中)
 
 https://www.docker.com/
 
+注意可能需要添加国内镜像
+
 #### 2.安装Git(可选)
 
 https://git-scm.com/
@@ -81,15 +83,17 @@ https://git-scm.com/
 
 ```bash
 #添加id为1001的用户,docker容器默认使用该账号
-useradd -u 1001 miku
-#在根目录创建必要目录(需要root身份)
-mkdir /mikufans /data /repo
+sudo useradd -u 1001 miku
+#将新用户添加到docker组
+sudo usermod -aG docker miku
+#在根目录创建必要目录
+sudo mkdir /mikufans /data /repo
 #将拥有者改为1001
-chown 1001 /mikufans /data /repo
+sudo chown 1001 /mikufans /data /repo
 #切换用户到1001(重要)
 su miku
 #拉取本项目 或 将项目解压后放入根目录即可
-git clone https://gitee.com/t_tgl/mikufans
+git clone https://gitee.com/t_tgl/mikufans.git
 #执行启动脚本(注意最好不要使用root启动,可能会出现docker容器无权限问题)
 cd /mikufans && ./startup.sh
 ```

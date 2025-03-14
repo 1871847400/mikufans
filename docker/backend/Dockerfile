@@ -7,27 +7,26 @@ WORKDIR /app
 #说明
 #RUN在build过程中的执行命令，ENTRYPOINT和CMD在run后执行
 
-#修改yum镜像源,因为默认的无法使用
+#修改yum镜像源,默认的可能无法使用
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 
 #安装第三方仓库(包含最新的一些库)
-RUN curl https://setup.ius.io | sh
-RUN yum install -y https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+#RUN curl https://setup.ius.io | sh
+#RUN yum install -y https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
 
 #更新yum仓库和清除缓存
 RUN yum -y update && yum clean all
 
 #安装基础工具
-RUN yum install -y vim wget tree net-tools git236
+RUN yum install -y vim wget tree net-tools
 
-#安装中文
-RUN yum install -y kde-l10n-Chinese glibc-common
-RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
-RUN echo LANG="zh_CN.utf8" >> /etc/locale.conf
-RUN source /etc/locale.conf
-# export LANG=zh_CN.utf8
-# RUN echo export LC_ALL=zh_CN.UTF-8 >> /etc/profile
-# RUN source /etc/profile
+#安装中文环境和字体
+RUN yum install -y glibc-common zh-CN wqy-microhei-fonts
+
+#设置语言环境为中文
+ENV LANG zh_CN.UTF-8
+ENV LANGUAGE zh_CN:zh
+ENV LC_ALL zh_CN.UTF-8
 
 #安装python3和pip3
 #RUN yum install -y python3

@@ -1,6 +1,7 @@
 package pers.tgl.mikufans.transfer.aliyun_oss;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
@@ -27,6 +28,9 @@ public class OssUtils implements ResourceTransfer, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        if (StrUtil.isBlank(ossConfig.getAccessKeyId()) || StrUtil.isBlank(ossConfig.getAccessKeySecret())) {
+            return;
+        }
         String bucketName = ossConfig.getBucketName();
         OSS ossClient = getOSSClient();
         try {
