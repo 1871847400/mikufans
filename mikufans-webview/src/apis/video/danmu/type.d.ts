@@ -6,7 +6,7 @@ interface VideoDanmu extends BaseEntity {
   fontType: 1 //字体大小
   sendTime: number //发送时间 秒
   danmuType: DanmuType //弹幕类型: 滚动,固定
-  createDate: string
+  publishDate: string //发送日期,不包括时间
   likeStatus: LikeStatus
 }
 

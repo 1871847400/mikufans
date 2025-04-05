@@ -10,6 +10,7 @@ spring:
         - app
         - socket
         - oss
+        - oauth
       prod:
         - prod
       dev:

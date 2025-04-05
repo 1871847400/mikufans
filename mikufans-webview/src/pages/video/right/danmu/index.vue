@@ -17,7 +17,7 @@
             <li class="list-item" v-for="i in danmuList" :key="i.id">
               <span>{{ displayDuration(i.sendTime*1000) }}</span>
               <span :title="i.content">{{ i.content }}</span>
-              <span>{{ i.createDate }}</span>
+              <span>{{ i.publishDate }}</span>
             </li>
           </ul>
         </el-scrollbar>

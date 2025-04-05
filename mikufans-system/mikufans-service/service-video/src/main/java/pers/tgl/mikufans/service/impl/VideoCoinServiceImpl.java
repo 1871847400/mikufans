@@ -14,6 +14,8 @@ import pers.tgl.mikufans.service.VideoCoinService;
 import pers.tgl.mikufans.util.DbUtils;
 import pers.tgl.mikufans.util.SecurityUtils;
 
+import java.math.BigDecimal;
+
 /**
  * 注意高并发线程安全问题,获取Count时可能是脏数据
  */
@@ -48,15 +50,16 @@ public class VideoCoinServiceImpl extends BaseServiceImpl<VideoCoin, VideoCoinMa
         } catch (Exception e) {
             throw new CustomException("硬币不足");
         }
+        BigDecimal actual = BigDecimal.valueOf(VIDEO_COIN_HARVEST).multiply(BigDecimal.valueOf(count));
         //增加被投币方硬币
-        DbUtils.increment(User::getCoin, count * VIDEO_COIN_HARVEST, User::getId, targetUserId);
+        DbUtils.increment(User::getCoin, actual, User::getId, targetUserId);
 
         VideoCoin entity = new VideoCoin();
         entity.setVideoId(videoId);
         entity.setCoinCount(count);
         if (save(entity)) {
             //发布事件
-            publishEvent(new PayCoinEvent(this, entity));
+            publishEvent(new PayCoinEvent(this, entity, actual));
         }
         return entity;
     }

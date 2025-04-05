@@ -20,10 +20,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import pers.tgl.mikufans.config.AppConfig;
 import pers.tgl.mikufans.consts.*;
 import pers.tgl.mikufans.domain.common.UploadTask;
-import pers.tgl.mikufans.domain.enums.AuditStatus;
-import pers.tgl.mikufans.domain.enums.AuditType;
-import pers.tgl.mikufans.domain.enums.NoticeType;
-import pers.tgl.mikufans.domain.enums.VideoPartType;
+import pers.tgl.mikufans.domain.enums.*;
 import pers.tgl.mikufans.domain.system.SysAudit;
 import pers.tgl.mikufans.domain.video.Video;
 import pers.tgl.mikufans.domain.video.VideoPart;
@@ -223,6 +220,7 @@ public class VideoPartServiceImpl extends BaseServiceImpl<VideoPart, VideoPartMa
         //本地文件保存位置
         String localPath = basePath + "/" + date + "/" + dto.getVideoId() + "/" + resId;
         videoResource.setLocalPath(localPath);
+        videoResource.setQualityLevel(0);
         //保存到数据库,生成id
         Db.save(videoResource);
         //创建物理目录

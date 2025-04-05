@@ -35,7 +35,7 @@ public class EmailManager implements Serializable {
         if (StrUtil.isBlank(email)) {
             throw new CustomException("邮箱格式不正确");
         }
-        String emailTimeKey = action + "_time:" + IpUtils.getIpaddr(ServletUtils.getRequest());
+        String emailTimeKey = action + "_time:" + IpUtils.getIpaddr(ServletUtils.getRequest()) + ":" + email;
         if (redisUtils.exists(emailTimeKey)) {
             Long seconds = redisUtils.ttl(emailTimeKey, TimeUnit.SECONDS);
             throw new CustomException("邮件验证冷却中,剩余"+seconds+"秒");

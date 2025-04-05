@@ -5,11 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 视频和音频的质量级别
@@ -17,9 +13,12 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public enum VideoQuality {
-    FHD(1, "超清", 10 * 1024 * 1024, 512 * 1024),
-    HD(2, "高清",  3 * 1024 * 1024, 128 * 1024),
-    SD(3, "标清", 1 * 1024 * 1024, 48 * 1024);
+    /**
+     * 需要按等级从小到大排列
+     */
+    SD(1, "流畅", 1 * 1024 * 1024, 48 * 1024),
+    HD(2, "高清",  2 * 1024 * 1024, 128 * 1024),
+    FHD(3, "超清", 3 * 1024 * 1024, 512 * 1024);
 
     //画质级别
     @EnumValue
@@ -42,21 +41,13 @@ public enum VideoQuality {
         return this.name().toLowerCase();
     }
 
-    public static VideoQuality from(@Nullable Integer level) {
+    @Nullable
+    public static VideoQuality fromLevel(int level) {
         for (VideoQuality quality : values()) {
             if (Objects.equals(quality.level, level)) {
                 return quality;
             }
         }
-        return HD;
-    }
-
-    /**
-     * level 从小到大
-     */
-    public static List<VideoQuality> all() {
-        return Arrays.stream(values())
-                .sorted(Comparator.comparingInt(a -> a.level))
-                .collect(Collectors.toList());
+        return null;
     }
 }

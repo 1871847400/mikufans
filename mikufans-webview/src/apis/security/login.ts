@@ -4,6 +4,8 @@ export default {
   sendEmailCode,
   emailLogin,
   login,
+  oauthLogin,
+  listAuth
 }
 
 /**
@@ -20,7 +22,9 @@ function sendEmailCode(data: {
   })
 }
 /**
- * 邮箱验证码登录
+ * 邮箱验证码登录/注册
+ * 已经注册过的邮箱将会转为登录
+ * 没有注册过的邮箱将自动注册
  */
 function emailLogin(data: EmailLoginDto) {
   return request<void>({
@@ -38,5 +42,24 @@ function login(data: LoginDto) {
     url: '/auth/login',
     method: 'post',
     data,
+  })
+}
+/**
+ * 第三方登录
+ */
+function oauthLogin(data: OAuthLogin) {
+  return request({
+    url: '/auth/oauth/login',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 第三方登录方式
+ */
+function listAuth() {
+  return request<Record<string, string>>({
+    url: '/auth/oauth/list',
+    method: 'get',
   })
 }

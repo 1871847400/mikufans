@@ -42,4 +42,8 @@ public class AppConfig implements Serializable {
      * 阿里云oss
      */
     private OssConfig oss;
+    /**
+     * oauth2.0
+     */
+    private Map<String, Map<String, String>> oauth;
 }

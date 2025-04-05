@@ -4,7 +4,7 @@
     <div class="qrcode">
       <canvas ref="qrcode" width="160" height="160"></canvas>
     </div>
-    <div class="text-center">请使用<a class="blue0" href="#">手机APP</a></div>
+    <div class="text-center">请使用<a class="blue0" href="/mobile" target="_blank">手机APP</a></div>
     <div class="text-center">扫码登录或扫码下载APP</div>
   </div>
 </template>

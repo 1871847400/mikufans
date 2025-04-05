@@ -55,4 +55,9 @@ public interface UserService extends BaseService<User> {
      * 修改用户数据
      */
     boolean updateUser(UserDto dto);
+    /**
+     * 更新用户头像
+     * todo
+     */
+    void updateAvatar(String avatarUrl);
 }

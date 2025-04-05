@@ -61,6 +61,7 @@ create table `video_resource`
     local_path    varchar(255)     not null comment '本地存储路径',
     transfer_mode tinyint unsigned not null comment '转存模式',
     transfer_path varchar(255)     not null comment '转存路径',
+    quality_level tinyint unsigned not null comment '最高画质等级',
     pending       tinyint unsigned not null comment '是否可用0可用1不可用',
     media_info    text             not null comment 'ffprobe'
 ) comment '视频资源表';
@@ -111,7 +112,7 @@ create table `video_danmu`
     video_id   bigint unsigned  not null comment '视频id',
     part_id    bigint unsigned  not null comment '分集id',
     content    varchar(128)     not null comment '弹幕内容',
-    font_color varchar(10)      not null comment '颜色代码',
+    font_color int unsigned     not null comment '颜色代码',
     font_type  tinyint unsigned not null comment '字体类型',
     send_time  decimal(10, 2)   not null comment '发送时间',
     danmu_type tinyint unsigned not null comment '弹幕类型',

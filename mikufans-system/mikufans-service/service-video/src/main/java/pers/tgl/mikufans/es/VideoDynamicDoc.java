@@ -13,8 +13,8 @@ public class VideoDynamicDoc extends UserDynamicDoc {
     public VideoDynamicDoc() {}
 
     public VideoDynamicDoc(UserDynamic userDynamic, Video video) {
-        super(userDynamic, video.getTitle());
-        if (video.getDisabled() == 1) {
+        super(userDynamic, video != null ? video.getTitle() : "");
+        if (video == null || video.getDisabled() == 1) {
             super.setDisabled(1);
         }
     }

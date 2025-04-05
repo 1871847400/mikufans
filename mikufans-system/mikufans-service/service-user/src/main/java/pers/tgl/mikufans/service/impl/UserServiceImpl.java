@@ -2,6 +2,7 @@ package pers.tgl.mikufans.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,10 @@ import pers.tgl.mikufans.util.SecurityUtils;
 import pers.tgl.mikufans.vo.UserVo;
 
 import javax.annotation.Resource;
+import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -201,7 +206,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         user.setPerms(Collections.emptyList());
         user.setCreateBy(createBy);
         save(user);
-        return getVoById(user.getId());
+        return getById(user.getId());
     }
 
     @Override
@@ -224,5 +229,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
             }
         }
         return updateById(BeanUtil.toBean(dto, User.class));
+    }
+
+    @Override
+    public void updateAvatar(String avatarUrl) {
+        Long contextUserId = SecurityUtils.getContextUserId(true);
+        try {
+            Image image = ImgUtil.getImage(new URL(avatarUrl));
+        } catch (MalformedURLException ignored) {}
     }
 }

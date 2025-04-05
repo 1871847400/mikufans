@@ -9,6 +9,7 @@ import pers.tgl.mikufans.validator.db.DBExists;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -24,10 +25,10 @@ public class VideoDanmuDto implements Serializable {
     @Length(min = 1, max = 32, message = "弹幕长度1-32")
     private String content;
     /**
-     * 颜色代码
+     * 颜色代码,必须类似于: #ffffff #fff
      */
     @NotBlank
-    @Length(max = 7, message = "颜色代码太长")
+    @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "颜色代码格式不正确")
     private String fontColor;
     /**
      * 字体大小

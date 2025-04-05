@@ -91,12 +91,9 @@ public class FFmpegUtils {
      * 返回.m3u8文件
      * ffmpeg -i xxx -hls_segment_type mpegts -hls_playlist_type vod -hls_time 10 -c:v libx264 -c:a aac -sn -vf format=yuv420p -crf 18
      */
-    public static void convertToHls(File videoFile, File outFolder, List<VideoQuality> qualities, boolean encrypt, @Nullable Consumer<Float> onProgress) throws Exception {
+    public static HlsConvertResult convertToHls(File videoFile, File outFolder, boolean encrypt, @Nullable Consumer<Float> onProgress) throws Exception {
         if (!FileUtil.exist(videoFile)) {
             throw new FileNotFoundException("视频文件不存在");
-        }
-        if (CollUtil.isEmpty(qualities)) {
-            throw new IOException("画质不能为空");
         }
         //如果没有音频必须禁掉,否则报错
         boolean hasAudio;
@@ -142,21 +139,29 @@ public class FFmpegUtils {
         cmd.add("-vf"); //video_format
         cmd.add("format=yuv420p"); // 如果是yuv420p10可能不支持手机
         StringBuilder streams = new StringBuilder();
-        for (int i = 0; i < qualities.size(); i++) {
-            VideoQuality quality = qualities.get(i);
-            cmd.add("-b:v:" + i);
+        HlsConvertResult result = new HlsConvertResult();
+        int index = 0;
+        for (VideoQuality quality : VideoQuality.values()) {
+            //如果指定画质的码率高于原始视频的码率,则放弃该画质的分片
+            if (quality != VideoQuality.SD && quality.getVideoBitrate() > videoBitRate) {
+                continue;
+            }
+            cmd.add("-b:v:" + index);
+            //防止转换的码率高于实际码率,否则导致播放卡顿
             cmd.add(Math.min(quality.getVideoBitrate(), videoBitRate)+"");
-            cmd.add("-b:a:" + i);
+            cmd.add("-b:a:" + index);
             cmd.add(Math.min(quality.getAudioBitrate(), audioBitRate)+"");
             cmd.add("-map");
             cmd.add("0:v");
             cmd.add("-map");
             cmd.add("0:a?"); // 问号可以防止音频不存在报错
-            streams.append(" v:").append(i);
+            streams.append(" v:").append(index);
             if (hasAudio) {
-                streams.append(",a:").append(i);
+                streams.append(",a:").append(index);
             }
             streams.append(",name:").append(quality.key()); //确定生成的文件夹(装分片)名称
+            index++;
+            result.addQuality(quality);
         }
         if (encrypt) {
             Path keyInfoPath = genKeyInfo(outFolder.getAbsolutePath());
@@ -222,6 +227,7 @@ public class FFmpegUtils {
         cmdLog.setOutput(CollUtil.join(lines, LINE_SEPARATOR));
         cmdLog.setExitCode(waitFor);
         Db.save(cmdLog);
+        return result;
     }
 
     public static Duration parseMediaFileDuration(File videoFile, Duration def) {

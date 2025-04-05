@@ -1,5 +1,6 @@
 package pers.tgl.mikufans.domain.video;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -13,6 +14,7 @@ import pers.tgl.mikufans.form.Form;
 import pers.tgl.mikufans.form.FormItem;
 import pers.tgl.mikufans.form.FormItemType;
 import pers.tgl.mikufans.form.Scope;
+import pers.tgl.mikufans.handler.type.ColorTypeHandler;
 import pers.tgl.mikufans.jackson.sensitive.Sensitive;
 import pers.tgl.mikufans.jackson.sensitive.SensitiveType;
 
@@ -24,7 +26,7 @@ import java.util.Date;
  * @TableName video_danmu
  */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value ="video_danmu")
+@TableName(value ="video_danmu", autoResultMap = true)
 @FieldNameConstants
 @Data
 @PermFlag(name = "视频弹幕", group = PermGroup.BUSINESS)
@@ -47,9 +49,11 @@ public class VideoDanmu extends UserBaseEntity {
     @FormItem(type = FormItemType.TEXT, label = "弹幕内容", placeholder = "请输入弹幕内容", required = Scope.BOTH)
     private String content;
     /**
-     * 颜色代码
+     * 颜色代码 16进制格式: #ffffff  #fff
+     * 数据库实际存储格式为10进制：16777215
      */
     @FormItem(type = FormItemType.COLOR, label = "颜色代码", placeholder = "请输入颜色代码", required = Scope.BOTH, value = "#fff")
+    @TableField(typeHandler = ColorTypeHandler.class)
     private String fontColor;
     /**
      * 字体类型

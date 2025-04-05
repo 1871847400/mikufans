@@ -60,6 +60,10 @@ public class VideoResource extends UserBaseEntity {
      */
     private Integer pending;
     /**
+     * 最高画质等级
+     */
+    private Integer qualityLevel;
+    /**
      * 预处理前的元数据(很大,一般不获取)
      */
     @Sensitive

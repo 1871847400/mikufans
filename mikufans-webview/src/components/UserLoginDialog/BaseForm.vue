@@ -7,12 +7,14 @@
     </div>
     <login-form v-if="mode===0" @register="mode=1"/>
     <register-form v-else-if="mode===1"/>
+    <third-auth />
   </div>
 </template>
 
 <script setup lang="ts">
 import LoginForm from './LoginForm.vue';
 import RegisterForm from './RegisterForm.vue';
+import ThirdAuth from './ThirdAuth.vue'
 const props = defineProps({
   defMode: number().def(0)
 })

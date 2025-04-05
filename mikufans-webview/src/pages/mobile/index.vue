@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>APP下载页面</p>
+    <h3>APP下载页面,敬请期待！</h3>
   </div>
 </template>
 

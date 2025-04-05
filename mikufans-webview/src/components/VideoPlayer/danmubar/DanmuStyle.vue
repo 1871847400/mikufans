@@ -12,7 +12,7 @@
     <div class="mt-3 mb-1">弹幕颜色</div>
     <div>
       <div class="flex gap-1">
-        <input class="color-input" v-model="danmuStyle.color" type="text" maxlength="7">
+        <input class="color-input" v-model="danmuStyle.color" type="text" maxlength="7" placeholder="#FFF">
         <div class="color-palette" :style="{background:danmuStyle.color}"></div>
       </div>
       <ul class="color-piece">
@@ -38,6 +38,11 @@ const types = [
   { label: '底部', value: 'FIXED_BOTTOM' as DanmuType, icon: '&#xe69d;' },
 ]
 const { state: colors } = useAsyncState(videoDanmuApi.getColorList(), [])
+watch(()=>danmuStyle.color, (color)=>{
+  if (!color.startsWith('#')) {
+    danmuStyle.color = '#' + color.replace('#', '')
+  }
+})
 </script>
 
 <style scoped lang="scss">

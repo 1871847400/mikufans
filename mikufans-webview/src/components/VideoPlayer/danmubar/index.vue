@@ -27,8 +27,8 @@
         ref="richRef" 
         :placeholder="userStore.isLogin?'发条弹幕试试吧':'请先登录后再发送弹幕'" 
         :breakable="false" 
-        @keydown.enter.prevent="onSubmit" 
-        :disabled="!userStore.isLogin"
+        @keydown.enter.prevent="onSubmit"
+        :disabled="!userStore.isLogin || submiting"
       />
       <el-popover trigger="hover" placement="top" width="310px" :teleported="false">
         <emoji-selector :inputRef="richRef"/>
@@ -38,7 +38,7 @@
           </span>
         </template>
       </el-popover>
-      <button class="submit" @click="onSubmit">发送</button>
+      <button class="submit" @click="onSubmit" :disabled="submiting">发送</button>
     </div>
   </div>
 </template>
@@ -51,20 +51,26 @@ import videoDanmuApi from '@/apis/video/danmu'
 const { videoElement, videoPart, danmus } = toRefs(useVideoStore())
 const userStore = useUserStore()
 const richRef = useTemplateRef('richRef')
+const submiting = ref(false)
 async function onSubmit() {
   const text = richRef.value.text.trim()
-  danmuInput.value = ''
-  richRef.value.clear()
   if (text && videoElement.value && videoPart.value && userStore.isLogin) {
-    const danmu = await videoDanmuApi.send({
-      content: text,
-      danmuType: danmuStyle.type,
-      fontColor: danmuStyle.color,
-      fontType: 1,
-      partId: videoPart.value.id,
-      sendTime: videoElement.value.currentTime,
-    })
-    danmus.value.push(danmu)
+    submiting.value = true
+    try {
+      const danmu = await videoDanmuApi.send({
+        content: text,
+        danmuType: danmuStyle.type,
+        fontColor: danmuStyle.color,
+        fontType: 1,
+        partId: videoPart.value.id,
+        sendTime: videoElement.value.currentTime,
+      })
+      danmus.value.push(danmu)
+      danmuInput.value = ''
+      richRef.value.clear()
+    } finally {
+      submiting.value = false
+    }
   }
 }
 </script>

@@ -14,6 +14,7 @@ interface VideoResource extends BaseEntity {
   transferPath?: string
   transferMode: TransferMode
   pending: number
+  qualityLevel: number //最高画质等级
   durationFormat: string
 }
 

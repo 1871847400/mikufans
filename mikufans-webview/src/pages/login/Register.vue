@@ -2,7 +2,7 @@
   <el-form size="large" :model="form" ref="formRef" :rules="rules">
     <div class="title">MIKUFANS注册页面</div>
     <el-form-item prop="user.nickname">
-      <el-input v-model="form.user.nickname" clearable placeholder="昵称">
+      <el-input v-model="form.nickname" clearable placeholder="昵称">
         <template #prefix>
           <span class="iconfont">&#xe678;</span>
         </template>
@@ -16,7 +16,7 @@
       </el-input>
     </el-form-item>
     <el-form-item prop="user.password">
-      <el-input v-model="form.user.password" show-password placeholder="6-20位密码">
+      <el-input v-model="form.password" show-password placeholder="6-20位密码">
         <template #prefix>
           <span class="iconfont">&#xe65b;</span>
         </template>
@@ -63,8 +63,8 @@ const form = reactive<EmailLoginDto & { password2: string }>({
   uuid: '',
   email: '',
   code: '',
-  user: {
-  },
+  nickname: '',
+  password: '',
   password2: ''
 })
 const coolDown = ref(0)
@@ -105,7 +105,7 @@ function register() {
   }).catch(()=>{})
 }
 const rules = <FormRules>{
-  'user.nickname': [
+  nickname: [
     { required: true, message: '请填写昵称', trigger: 'blur', whitespace: true,}, 
     { min: 2, max: 16, message: '昵称长度2-16位', trigger: 'blur',},
   ],
@@ -113,13 +113,13 @@ const rules = <FormRules>{
     { required: true, message: '请填写邮箱', trigger: 'blur' },
     { type: 'email', message: '邮箱格式不正确',  trigger: 'blur' },
   ],
-  'user.password': [
+  password: [
     { required: true, message: '请填写密码', trigger: 'blur' },
     { min: 6, max: 24, message: '密码长度6-24位', trigger: 'blur',},
   ],
   password2: { trigger: 'blur', asyncValidator(rule, value) {
       return new Promise((resolve, reject) => {
-        if (value !== form.user?.password) {
+        if (value !== form.password) {
           reject('两次输入密码不一致')
         } else {
           resolve()

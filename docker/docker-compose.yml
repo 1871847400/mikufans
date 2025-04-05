@@ -163,6 +163,7 @@ services:
   nginx-master:
     image: bitnami/nginx:1.27.4
     container_name: nginx
+    #user: root #如果绑定端口没权限可以启用
     ports:
       - "80:80"
     volumes:

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * 如果主表逻辑删除了,也会在es中删除，如果物理删除则es中不会被删
  *
  * 文档类需要提供一个构造方法：参数是：主表,关联表1,关联表2...
- * 如果其中一张表的实体没有找到，不会传递null作为参数，而是调用空参方法生成的对象
+ * 如果其中一张表的实体没有找到，将会传递null作为参数
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

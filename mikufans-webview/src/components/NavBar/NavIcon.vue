@@ -12,7 +12,7 @@
       <component v-if="lazyShow && isLogin" :is="component"/>
       <div v-else-if="!isLogin" class="p-4">
         <div class="text-center py-4">登录后才能查看{{ label }}</div>
-        <el-button class="w-full" type="primary" @click="$router.push('/login')">立即登录</el-button>
+        <el-button class="w-full" type="primary" @click="login()">立即登录</el-button>
       </div>
     </template>
     <template #reference>
@@ -42,6 +42,7 @@ const props = defineProps<{
   component?: Component
 }>()
 const { isLogin } = toRefs(useUserStore())
+const { login } = useUserStore()
 //延迟加载popover的内容
 const lazyShow = ref(false)
 const showCount = computed(()=>{

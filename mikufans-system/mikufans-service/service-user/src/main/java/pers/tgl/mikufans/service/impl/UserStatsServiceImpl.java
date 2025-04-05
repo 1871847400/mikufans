@@ -18,9 +18,8 @@ public class UserStatsServiceImpl extends BaseServiceImpl<User, UserMapper> impl
     public void listen(PayCoinEvent e) {
         //被投币的用户
         Long userId = DbUtils.getUserIdBy(Video.class, e.getVideoCoin().getVideoId());
-        int count = e.getVideoCoin().getCoinCount();
         //累计用户收到的硬币
-        incrementById(userId, User::getCoin, count);
+        incrementById(userId, User::getCoins, e.getVideoCoin().getCoinCount());
     }
 
     @EventListener(VideoEvent.class)

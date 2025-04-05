@@ -2,7 +2,8 @@
   <div class="user-action">
     <div class="user-avatar-wrap">
       <div class="user-avatar" @mouseenter="updateUser">
-        <user-avatar :popover="false" size="52px"/>
+        <user-avatar v-if="userStore.isLogin" :popover="false" size="52px"/>
+        <div v-else class="avatar-login" @click="userStore.login()">登录</div>
       </div>
       <!-- 弹出的用户资料框 -->
       <div class="popover-user">
@@ -152,4 +153,17 @@ function login(mode = 0) {
   &:hover {
     background-color: #e27392;
   }
-}</style>
+}
+.avatar-login {
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  text-align: center;
+  background-color: #00aeec;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 550;
+  user-select: none;
+  cursor: pointer;
+}
+</style>

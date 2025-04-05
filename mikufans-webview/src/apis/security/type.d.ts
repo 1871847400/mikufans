@@ -21,10 +21,16 @@ interface LoginDto {
   puzzleId?: string //如果有,需要先验证通过
 }
 interface EmailLoginDto extends EmailValidate {
-  user?: UserDto
+  nickname?: string
+  password?: string
 }
 interface EmailValidate {
   uuid: string
   email: string
   code: string
+}
+
+interface OAuthLogin {
+  oauthType: string
+  oauthCode: string
 }

@@ -25,7 +25,6 @@ import pers.tgl.mikufans.form.*;
 import pers.tgl.mikufans.jackson.IntegerSerializer;
 import pers.tgl.mikufans.jackson.sensitive.Sensitive;
 import pers.tgl.mikufans.jackson.sensitive.SensitiveType;
-import pers.tgl.mikufans.util.SecurityUtils;
 import pers.tgl.mikufans.validator.group.Create;
 
 import javax.validation.constraints.Min;
@@ -146,6 +145,7 @@ public class User extends SystemBaseEntity implements UserDetails {
     /**
      * 权限列表 角色用ROLE_开头表示
      */
+    @Sensitive
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> perms;
     /**
@@ -157,7 +157,9 @@ public class User extends SystemBaseEntity implements UserDetails {
      */
     private Integer dislikes;
     /**
-     * 收到的硬币数量
+     * 累计被投币总数量
+     * coin = 余额
+     * coins = 累计数量
      */
     private Integer coins;
     /**
@@ -188,15 +190,6 @@ public class User extends SystemBaseEntity implements UserDetails {
      * 文章数量
      */
     private Integer articles;
-    /**
-     * 需要本人或管理员才能看到
-     */
-    public List<String> getPerms() {
-        if (Objects.equals(SecurityUtils.getContextUserId(false), this.getId())) {
-            return perms;
-        }
-        return null;
-    }
 
     @Override
     @JsonIgnore

@@ -50,6 +50,23 @@ ReactNative (开发中)
 
 `mikufans-system\mikufans-core\src\main\resources\config\application-oss.yml`
 
+- 配置第三方登录（可选）
+
+`mikufans-system\mikufans-core\src\main\resources\config\application-oauth.yml`
+
+```yaml
+app:
+  oauth:
+  	# 这里以github为例
+  	# 1.访问 https://github.com/settings/developers
+  	# 2.OAuth Apps -> new OAuth App
+  	# 3.点击 Generate a new client secret 生成秘钥
+    github:
+      client_id: 替换成自己的client_id
+      client_secret: 替换成自己的client_secret
+      redirect_uri: http://改成自己的IP/oauth/redirect/github
+```
+
 - 配置前端访问后端的地址
 
 `mikufans-webview/vite.config.ts`

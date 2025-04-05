@@ -3,6 +3,7 @@ package pers.tgl.mikufans.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -159,15 +160,12 @@ public class ElasticSyncServiceImpl extends BaseServiceImpl<ElasticSync, Elastic
                     if (findId != null) {
                         param = Db.getById(findId+"", tableClass);
                     }
-                    if (param == null) {
-                        param = ReflectUtil.newInstance(tableClass);
-                    }
                     paramObjs.add(param);
                 }
                 try {
                     saveList.add(constructor.newInstance(paramObjs.toArray()));
                 } catch (Exception e) {
-                    log.error("构造文档对象失败", e);
+                    log.error("构造文档对象失败 docClass={} params={}", cache.getDocumentClass(), JSONUtil.toJsonStr(paramObjs), e);
                     throw new RuntimeException(e);
                 }
             }

@@ -28,6 +28,28 @@ export const routes: RouteRecordRaw[] = [
     }
   },
   {
+    name: 'oauth-redirect',
+    path: '/oauth/redirect/:type',
+    component: () => import('@/pages/oauth/index.vue'),
+    meta: {
+      title: '第三方登录中...'
+    }
+  },
+  {
+    path: '/protocol/privacy',
+    component: () => import('@/pages/protocal/index.vue'),
+    meta: {
+      title: '隐私政策'
+    }
+  },
+  {
+    path: '/protocol/licence',
+    component: () => import('@/pages/protocal/index.vue'),
+    meta: {
+      title: '用户协议'
+    }
+  },
+  {
     path: '/channel/:uri+',
     component: ()=>import('@/pages/channel/index.vue'),
   },

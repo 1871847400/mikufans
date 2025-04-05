@@ -2,6 +2,7 @@ package pers.tgl.mikufans.controller.security;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.tgl.mikufans.aop.AppLog;
 import pers.tgl.mikufans.aop.login.LoginLimit;
 import pers.tgl.mikufans.aop.repeat.RepeatSubmit;
@@ -26,11 +23,14 @@ import pers.tgl.mikufans.config.TokenConfig;
 import pers.tgl.mikufans.consts.CustomHeaders;
 import pers.tgl.mikufans.consts.TokenType;
 import pers.tgl.mikufans.controller.BaseController;
+import pers.tgl.mikufans.controller.oauth.OAuthApi;
+import pers.tgl.mikufans.controller.oauth.OAuthUser;
 import pers.tgl.mikufans.domain.user.User;
 import pers.tgl.mikufans.domain.user.UserOperLog;
 import pers.tgl.mikufans.dto.security.EmailLoginDto;
 import pers.tgl.mikufans.dto.security.EmailSendDto;
 import pers.tgl.mikufans.dto.security.LoginDto;
+import pers.tgl.mikufans.dto.security.OAuthLoginDto;
 import pers.tgl.mikufans.event.UserTokenEvent;
 import pers.tgl.mikufans.exception.CustomException;
 import pers.tgl.mikufans.manager.EmailManager;
@@ -39,9 +39,10 @@ import pers.tgl.mikufans.service.UserService;
 import pers.tgl.mikufans.util.JsonUtils;
 import pers.tgl.mikufans.util.JwtUtils;
 import pers.tgl.mikufans.util.MyUtils;
-import pers.tgl.mikufans.util.SecurityUtils;
 import pers.tgl.mikufans.vo.EmailSendResult;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -90,31 +91,80 @@ public class LoginController extends BaseController {
      */
     @AppLog(value = "邮箱登录", type = UserOperLog.OPER_TYPE_LOGIN)
     @RepeatSubmit(interval = 1000)
-    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/email/login")
     public void login(@RequestBody @Validated EmailLoginDto dto) {
         emailManager.verifyEmail("login", dto);
         User user = userService.getOneBy(User::getUsername, dto.getEmail());
-        boolean isRegister = false;
         //如果用户不存在代表注册,自动创建用户
         if (user == null) {
-            isRegister = true;
-            //加锁防止uid变化导致昵称冲突
-            synchronized (this) {
-                int uid = (int) (userService.count() + 1);
+            String nickname = dto.getNickname();
+            String password = dto.getPassword();
+            if (StrUtil.isBlank(nickname)) {
                 //设置默认昵称
-                String nickname = "Miku_" + uid;
-                //设置随机密码
-                String password = RandomUtil.randomString(24);
-                user = userService.createUser(dto.getEmail(), nickname, password);
+                nickname = "Miku_" + RandomUtil.randomString(8);
             }
+            if (StrUtil.isBlank(password)) {
+                //设置随机密码
+                password = RandomUtil.randomString(24);
+            }
+            user = userService.createUser(dto.getEmail(), nickname, password);
         }
         UserToken userToken = new UserToken(user.getId(), user.getUsername(), user.getPassword().hashCode(), 0);
-        if (isRegister && dto.getUser() != null) {
-            SecurityUtils.setContextUserToken(userToken);
-            userService.updateUser(dto.getUser());
-        }
         setToken(userToken);
+    }
+
+    /**
+     * 使用 oauth2.0 进行登录
+     */
+    @AppLog(value = "第三方登录", type = UserOperLog.OPER_TYPE_LOGIN)
+    @RepeatSubmit(interval = 1000)
+    @PostMapping("/oauth/login")
+    public void oauthLogin(@RequestBody @Validated OAuthLoginDto dto) {
+        Map<String, OAuthApi> apis = SpringUtil.getBeansOfType(OAuthApi.class);
+        OAuthApi oAuthApi = null;
+        for (OAuthApi api : apis.values()) {
+            if (Objects.equals(dto.getOauthType(), api.getAuthType())) {
+                oAuthApi = api;
+                break;
+            }
+        }
+        if (oAuthApi == null) {
+            throw new CustomException("不支持的登录方式");
+        }
+        OAuthUser oAuthUser;
+        try {
+            String accessToken = oAuthApi.getAccessToken(dto.getOauthCode());
+            oAuthUser = oAuthApi.getOAuthUser(accessToken);
+        } catch (Exception e) {
+            throw new CustomException("请求第三方登录失败！");
+        }
+        String email = oAuthUser.getEmail();
+        //强制要求邮箱存在
+        if (StrUtil.isBlank(email)) {
+            throw new CustomException("未设置邮箱,无法完成第三方登录");
+        }
+        User user = userService.getOneBy(User::getUsername, email);
+        //用户不存在,自动注册
+        if (user == null) {
+            String nickname = oAuthUser.getNickname();
+            if (StrUtil.isBlank(nickname)) {
+                nickname = "Miku_" + RandomUtil.randomString(8);
+            }
+            String password = RandomUtil.randomString(24);
+            user = userService.createUser(email, nickname, password);
+        }
+        UserToken userToken = new UserToken(user.getId(), user.getUsername(), user.getPassword().hashCode(), 0);
+        setToken(userToken);
+    }
+
+    @GetMapping("/oauth/list")
+    public Map<String, String> listAuth() {
+        Map<String, String> result = new LinkedHashMap<>();
+        Map<String, OAuthApi> apis = SpringUtil.getBeansOfType(OAuthApi.class);
+        for (Map.Entry<String, OAuthApi> e : apis.entrySet()) {
+            result.put(e.getValue().getAuthType(), e.getValue().getAuthCodeUrl());
+        }
+        return result;
     }
 
     public void userLogin(String username, String password) {
