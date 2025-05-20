@@ -25,7 +25,9 @@ const msg = customRef((track, trigger)=>{
     }
   }
 })
-const seekTime = useRouteQuery('t', 0, { transform: toNumber })
+const HASH_PREFIX = '#time'
+const hash = useRouteHash('')
+// const seekTime = useRouteQuery('t', 0, { transform: toNumber })
 useEventListener(videoElement, 'loadedmetadata', onLoad)
 //加载元数据后,注意如果用@canplay会多次触发
 function onLoad() {
@@ -36,11 +38,14 @@ function onLoad() {
     seek = history.watchPos / 1000
     logger.debug('播放记录',seek)
   }
-  //如果使用了查询参数定位播放起点
-  if (seekTime.value && seekTime.value > seek) {
-    seek = seekTime.value
-    seekTime.value = 0
-    logger.debug('定位参数',seek)
+  //如果使用了参数定位播放起点
+  if (hash.value?.startsWith(HASH_PREFIX)) {
+    const seekTime = toNumber(hash.value.replace(HASH_PREFIX, ''))
+    if (seekTime > seek) {
+      seek = seekTime
+      hash.value = ''
+      logger.debug('定位参数',seek)
+    }
   }
   if (seek && videoElement.value.duration - seek > 1) {
     videoElement.value.currentTime = seek

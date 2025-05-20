@@ -14,7 +14,7 @@
     <el-popover trigger="hover" effect="dark" width="auto" placement="top" :teleported="false">
       <ul class="option-list">
         <template v-for="{ label, value } in levels">
-          <li :class="{active:level==value}" @click="level=toInteger(value)">{{ label }}</li>
+          <li :class="{active:level==value}" @click="changeLevel(value)">{{ label }}</li>
         </template>
       </ul>
       <template #reference>
@@ -52,7 +52,8 @@
 import { Events } from 'hls.js'
 import { toInteger } from 'lodash'
 import { addSubtitleTrack, clearSubtitleTracks } from '../functions/subtitle'
-const { hls, videoElement, playerElement, videoPart } = toRefs(useVideoStore())
+import logger from '@/utils/logger';
+const { hls, videoElement, playerElement, videoPart, videoSettings } = toRefs(useVideoStore())
 const subtitle = customRef((track, trigger)=>{
   let value : VideoSubtitle = null
   return {
@@ -132,22 +133,33 @@ const fullscreen = useFullscreen(playerElement, { autoExit: true })
 const levels = reactive<Option[]>([])
 watchImmediate(hls, ()=>{
   levels.length = 0
-  hls.value?.on(Events.LEVEL_LOADED, (ev, data)=>{
-    const url = data.details.url
-    let label = '标清'
-    if (url.includes('/fhd/')) {
-      label = '超清'
-    } else if (url.includes('/hd/')) {
-      label = '高清'
+  hls.value?.on(Events.MANIFEST_LOADED, (ev, data)=>{
+  logger.debug('MANIFEST_LOADED: ', data)
+    if (data.levels) {
+      for (const level of data.levels) {
+        const url = level.url
+        let label = '标清'
+        if (url.includes('/fhd/')) {
+          label = '超清'
+        } else if (url.includes('/hd/')) {
+          label = '高清'
+        }
+        levels.push({
+          label, value: data.levels.indexOf(level),
+        })
+      }
     }
-    levels.push({
-      label, value: data.level,
-    })
   })
 })
 const level = customRef((track, trigger)=>{
   watchImmediate(hls, ()=>{
-    hls.value?.on(Events.LEVEL_SWITCHED, ()=>{
+    //手动切换或自动切换
+    hls.value?.on(Events.LEVEL_SWITCHED, (ev, data)=>{
+      logger.debug('LEVEL_SWITCHED', data)
+      trigger()
+    })
+    hls.value?.on(Events.LEVEL_LOADED, (ev, data)=>{
+      logger.debug('LEVEL_LOADED: ', data)
       trigger()
     })
   })
@@ -161,7 +173,11 @@ const level = customRef((track, trigger)=>{
     }
   }
 })
-
+//手动切换画质
+function changeLevel(value: any) {
+  level.value = toInteger(value)
+  videoSettings.value.level = toInteger(value)
+}
 </script>
 
 <style scoped lang="scss">

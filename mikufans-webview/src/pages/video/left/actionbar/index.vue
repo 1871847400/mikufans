@@ -1,6 +1,6 @@
 <template>
   <div class="action-bar">
-    <favor-button/>
+    <like-button/>
     <!-- <dislike-button/> -->
     <coin-button/>
     <star-button/>
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import FavorButton from './buttons/FavorButton.vue';
+import LikeButton from './buttons/LikeButton.vue';
 import DislikeButton from './buttons/DislikeButton.vue';
 import CoinButton from './buttons/CoinButton.vue';
 import StarButton from './buttons/StarButton.vue';

@@ -11,7 +11,7 @@ const { msgUnread: unreadCounts } = toRefs(useMsgStore())
 const navList = computed(()=>[
   ['回复我的', '/msg/reply', unreadCounts.value.reply],
   ['@我的', '/msg/at', unreadCounts.value.atuser],
-  ['收到的赞', '/msg/favor', unreadCounts.value.likes],
+  ['收到的赞', '/msg/like', unreadCounts.value.likes],
   ['系统消息', '/msg/system', unreadCounts.value.systems],
   ['我的消息', '/msg/whisper', unreadCounts.value.whisper],
 ])

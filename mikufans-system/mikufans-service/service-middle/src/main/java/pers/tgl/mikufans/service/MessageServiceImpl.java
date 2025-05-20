@@ -1,6 +1,7 @@
 package pers.tgl.mikufans.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import pers.tgl.mikufans.domain.comment.UserComment;
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MessageServiceImpl implements MessageService {
     @Lazy
     @Resource
@@ -58,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
                     UserComment comment = userCommentService.findById(id);
                     UserCommentArea area = userCommentAreaService.findById(comment.getAreaId());
                     MessageModel model = getModel(area.getBusiType(), area.getBusiId());
-                    return new MessageModel(BusinessType.COMMENT, model.getUri() + "#" + comment.getId(), comment.getContent());
+                    return new MessageModel(BusinessType.COMMENT, model.getUri() + "#comment" + comment.getId(), comment.getContent());
                 case DYNAMIC:
                     UserDynamic dynamic = userDynamicService.findById(id);
                     if (dynamic.getShareId() != 0) {
@@ -77,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
                     return new MessageModel(BusinessType.STAR, userStar.getUri(), userStar.getStarName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取消息模型失败", e);
         }
         return null;
     }

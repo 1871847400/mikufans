@@ -26,10 +26,10 @@
           <div class="logout" @click="userStore.logout()">退出登录</div>
         </template>
         <div v-else>
-          <el-button type="primary" style="width: 100%;" @click="login()">点击登录</el-button>
+          <el-button type="primary" style="width: 100%;" @click="userStore.login()">点击登录</el-button>
           <div class="text-xs my-2">
             <span>还没有账号？</span>
-            <el-button size="small" link><em @click="login(1)">点击注册</em></el-button>
+            <el-button size="small" link><em @click="userStore.login(1)">点击注册</em></el-button>
           </div>
         </div>
       </div>
@@ -43,8 +43,6 @@
 </template>
 
 <script setup lang="ts">
-import { openDialog } from '@/utils/dialog';
-import UserLoginDialog from '@/components/UserLoginDialog/index.vue';
 import NavIcon from './NavIcon.vue';
 import { getNavIconOptions } from './popover';
 const { width } = useWindowSize()
@@ -72,11 +70,8 @@ const statList = [
 function onClick(e: Event) {
   if (!userStore.isLogin) {
     e.preventDefault()
-    login()
+    userStore.login(0)
   }
-}
-function login(mode = 0) {
-  openDialog(UserLoginDialog, { mode })
 }
 </script>
 

@@ -48,7 +48,7 @@ const currentTime = ref(0)
 const href = computed(()=>{
   let url = '/video/' + props.video.sid
   if (currentTime.value >= 3) {
-    url += '?t=' + currentTime.value
+    url += '#time' + currentTime.value
   }
   return url
 })

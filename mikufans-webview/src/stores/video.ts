@@ -33,6 +33,7 @@ export const useVideoStore = defineStore('video', ()=>{
     muted: false, //是否静音
     playbackRate: 1, //播放倍数
     autoPlayNext: true, //自动连播
+    level: 2, //优先选择画质
   })
   const { like, dislike } = useLike(toRef(()=>video.value?.likeStatus))
   return {

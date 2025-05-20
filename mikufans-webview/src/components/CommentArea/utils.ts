@@ -1,5 +1,7 @@
 import { convertToHtml } from "@/utils/emoji"
 
+export const HASH_PREFIX = '#comment'
+
 /**
  * 转换评论内容为HTML格式
  */

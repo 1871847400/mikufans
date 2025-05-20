@@ -27,6 +27,7 @@ import pers.tgl.mikufans.exception.CustomException;
 import pers.tgl.mikufans.mapper.VideoDanmuMapper;
 import pers.tgl.mikufans.model.BiliDanmu;
 import pers.tgl.mikufans.service.*;
+import pers.tgl.mikufans.socket.DanmuSocketListener;
 import pers.tgl.mikufans.util.BiliDanmuUtils;
 import pers.tgl.mikufans.vo.VideoDanmuVo;
 
@@ -46,6 +47,7 @@ public class VideoDanmuServiceImpl extends BaseServiceImpl<VideoDanmu, VideoDanm
     private final VideoPartService videoPartService;
     private final UserLikeDataService userLikeDataService;
     private final UserNoticeService userNoticeService;
+    private final DanmuSocketListener danmuSocketListener;
 
     @Override
     public List<VideoDanmuVo> listByPartId(Long partId, @Nullable Long minId) {

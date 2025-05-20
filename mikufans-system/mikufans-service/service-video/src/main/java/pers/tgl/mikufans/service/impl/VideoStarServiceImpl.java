@@ -55,13 +55,15 @@ public class VideoStarServiceImpl extends BaseServiceImpl<VideoStar, VideoStarMa
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveDto( VideoStarDto dto) {
+    public boolean saveDto(VideoStarDto dto) {
         Long contextUserId = SecurityUtils.getContextUserId(true);
         if (CollUtil.isNotEmpty(dto.getDelList())) {
-            lambdaUpdate().eq(VideoStar::getUserId, contextUserId)
-                    .eq(VideoStar::getVideoId, dto.getVideoId())
-                    .in(VideoStar::getStarId, dto.getDelList())
-                    .remove();
+            for (Long starId : dto.getDelList()) {
+                VideoStar videoStar = lambdaQuery().eq(VideoStar::getStarId, starId)
+                        .eq(VideoStar::getVideoId, dto.getVideoId())
+                        .one();
+                removeById(videoStar);
+            }
         }
         if (CollUtil.isNotEmpty(dto.getAddList())) {
             for (Long starId : dto.getAddList()) {

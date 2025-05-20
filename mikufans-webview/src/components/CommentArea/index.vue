@@ -50,6 +50,7 @@ import CommentItem from './CommentItem.vue';
 import commentApi from '@/apis/user/comment';
 import { clamp } from 'lodash';
 import { useProvideStore, useStore, StoreParams } from './store';
+import { HASH_PREFIX } from './utils';
 //skeleton: 初次请求显示的骨架屏数量
 const props = defineProps<StoreParams & { skeleton?: number }>()
 //注入store
@@ -64,8 +65,8 @@ const showList = computed(()=>{
 })
 next()
 //如果定位了评论
-if (useHash && hash) {
-  const id = hash.replace('#', '')
+if (useHash && hash?.startsWith(HASH_PREFIX)) {
+  const id = hash.replace(HASH_PREFIX, '')
   if (id) {
     commentApi.getTreeById(id).then(data=>{
       if (data && list.value.findIndex(a=>a.id===data.id) === -1) {

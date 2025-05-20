@@ -2,11 +2,7 @@
 
 ### 前言
 
-本项目是我在大学期间耗费将近一坤年做的视频网站，主要是想借由这个项目熟悉和提升前后端各种技术。
-
-因为使用B站刷视频，看番将近10年了，所以用户界面和操作逻辑都模仿了[B站](https://www.bilibili.com/)。
-
-注意：功能逻辑，UI都改过很多次，所以测试次数不多，可能有不少bug。
+本项目是我在大学期间耗费将近两年半做的弹幕视频网站，功能和UI主要参考了[B站](https://www.bilibili.com/)，我主要通过这个项目来熟悉掌握前后端各种技术栈。
 
 ### 技术栈
 
@@ -16,15 +12,15 @@ Vue3 + Vite  + TypeScript + ElementPlus + Sass + TailwindCSS
 
 #### 后端
 
-JDK8 + SpringBoot2 + SpringSecurity + MyBatisPlus
+Jdk8 + SpringBoot2 + SpringSecurity + MyBatisPlus
 
 #### 数据库
 
 MySQL8 + Redis + ElasticSearch7.17.26
 
-#### 手机端(安卓+IOS)
+#### 手机端(ReactNative0.74.7)
 
-ReactNative (开发中)
+react-native-video + react-native-reanimated + zustand + jotai
 
 ### 声明
 
@@ -153,62 +149,70 @@ cd /mikufans && ./startup.sh
 
 ## 截图
 
-### 首页
+### 用户PC端
+
+#### 首页
 
 ![image-20250312135117679](./images/image-20250312135117679.png)
 
-### 番剧页
+#### 番剧页
 
 ![Snipaste_2025-03-11_19-38-49](./images/Snipaste_2025-03-11_19-38-49.png)
 
-### 番剧详情
+#### 番剧详情
 
 ![image-20250312150105359](./images/image-20250312150105359.png)
 
-### 搜索页
+#### 搜索页
 
 ![image-20250312142054656](./images/image-20250312142054656.png)
 
-### 索引页
+#### 索引页
 
 ![image-20250312142138070](./images/image-20250312142138070.png)
 
-### 个人空间
+#### 个人空间
 
 ![image-20250312142255930](./images/image-20250312142255930.png)
 
-### 动态页
+#### 动态页
 
 ![image-20250312142445370](./images/image-20250312142445370.png)
 
-### 播放页
+#### 播放页
 
 ![image-20250312142644349](./images/image-20250312142644349.png)
 
-### 创作中心
+#### 创作中心
 
 ![image-20250312142743958](./images/image-20250312142743958.png)
 
-### 消息页
+#### 消息页
 
 ![image-20250312143020980](./images/image-20250312143020980.png)
 
-### 分区
+#### 分区
 
 ![image-20250312143304523](./images/image-20250312143304523.png)
 
-### 播放历史
+#### 播放历史
 
 ![image-20250312143325436](./images/image-20250312143325436.png)
 
-### 电影页
+#### 电影页
 
 准备中
 
-### 文章页
+#### 文章页
 
 准备中
+
+### 手机端
+
+<img src="./images/Screenshot_2025-05-20-20-17-56-36_9b9751296176f84.jpg" alt="Screenshot_2025-05-20-20-17-56-36_9b9751296176f84" style="zoom:25%;" /><img src="./images/Screenshot_2025-05-20-20-10-21-22_9b9751296176f84.jpg" alt="Screenshot_2025-05-20-20-10-21-22_9b9751296176f84" style="zoom:25%;" /><img src="./images/Screenshot_2025-05-20-20-10-25-60_9b9751296176f84.jpg" alt="Screenshot_2025-05-20-20-10-25-60_9b9751296176f84" style="zoom: 25%;" />
 
 ### 后台管理
+
+#### 视频审核
 
 ![image-20250312154431423](./images/image-20250312154431423.png)

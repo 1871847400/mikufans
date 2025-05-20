@@ -52,7 +52,10 @@ public class OssUtils implements ResourceTransfer, InitializingBean {
     }
 
     private OSS getOSSClient() {
-        CredentialsProvider credentialsProvider = new DefaultCredentialProvider(ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+        CredentialsProvider credentialsProvider = new DefaultCredentialProvider(
+                ossConfig.getAccessKeyId(),
+                ossConfig.getAccessKeySecret()
+        );
         // 创建OSSClient实例。
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);

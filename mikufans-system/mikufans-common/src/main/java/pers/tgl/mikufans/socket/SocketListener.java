@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 实现websocket的监听者基类
+ */
 @SuppressWarnings("all")
 public interface SocketListener extends ConnectListener, DisconnectListener, AuthTokenListener {
     public static final Logger log = LoggerFactory.getLogger(SocketListener.class);

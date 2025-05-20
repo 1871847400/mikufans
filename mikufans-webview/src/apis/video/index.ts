@@ -110,7 +110,7 @@ function createShare(videoId: string) {
 function useShare(code: string) {
   return request<string>({
     url: `/video/share/${code}`,
-    method: 'get',
+    method: 'put',
   })
 }
 /**

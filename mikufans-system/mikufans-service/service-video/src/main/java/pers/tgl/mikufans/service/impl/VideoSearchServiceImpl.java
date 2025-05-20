@@ -10,11 +10,13 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
+import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
@@ -55,6 +57,7 @@ import pers.tgl.mikufans.util.PageImpl;
 import pers.tgl.mikufans.util.SecurityUtils;
 import pers.tgl.mikufans.vo.BangumiVo;
 import pers.tgl.mikufans.vo.HighlightText;
+import pers.tgl.mikufans.vo.UserDynamicVo;
 import pers.tgl.mikufans.vo.VideoVo;
 
 import java.util.*;
@@ -185,7 +188,7 @@ public class VideoSearchServiceImpl extends BaseServiceImpl<Video, VideoMapper> 
         return wrapper()
                 .selectAll(Video.class)
                 .innerJoin(UserDynamic.class, UserDynamic::getTargetId, Video::getId)
-                .innerJoin(UserLikeData.class, UserLikeData::getBusiId, Video::getId)
+                .innerJoin(UserLikeData.class, UserLikeData::getBusiId, UserDynamic::getId)
                 .innerJoin(UserLike.class, UserLike::getLikeDataId, UserLikeData::getId)
                 .eq(UserLike::getUserId, userId)
                 .eq(UserDynamic::getVisible, 1)
@@ -284,6 +287,36 @@ public class VideoSearchServiceImpl extends BaseServiceImpl<Video, VideoMapper> 
                 .orderBy(true, false, "rand()")
                 .last("limit " + size)
                 .list(VideoVo.class);
+    }
+
+    public List<VideoVo> getRecommendByScore(int size) {
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .filter(QueryBuilders.termQuery(VideoDoc.Fields.search, 1))
+                .filter(QueryBuilders.termQuery(VideoDoc.Fields.visible, 1))
+                .filter(QueryBuilders.termQuery(VideoDoc.Fields.disabled, 0));
+        FunctionScoreQueryBuilder.FilterFunctionBuilder filter = new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                QueryBuilders.matchAllQuery(),
+                ScoreFunctionBuilders.scriptFunction(new Script("Math.random() * doc['score'].value"))
+        );
+        FunctionScoreQueryBuilder.FilterFunctionBuilder[] filters = { filter };
+        FunctionScoreQueryBuilder builder = QueryBuilders.functionScoreQuery(boolQueryBuilder, filters)
+                .scoreMode(FunctionScoreQuery.ScoreMode.MULTIPLY)
+                .boostMode(CombineFunction.REPLACE);
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(builder)
+                .withPageable(Pageable.ofSize(size))
+                .build();
+        SearchHits<VideoDoc> searchHits = elasticsearchOperations.search(query, VideoDoc.class);
+        return searchHits.get()
+                .map(hit -> {
+                    VideoVo vo = getById(hit.getId(), VideoVo.class);
+                    if (vo != null) {
+                        vo.setDynamic(userDynamicService.getById(vo.getId(), UserDynamicVo.class));
+                    }
+                    return vo;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override

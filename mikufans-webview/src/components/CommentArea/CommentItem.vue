@@ -49,7 +49,7 @@ import { isString, uniqBy } from 'lodash';
 import { usePage } from '@/hooks/usePage';
 import { useStore } from './store';
 import ImageList from './ImageList.vue';
-import { convertComment } from './utils';
+import { convertComment, HASH_PREFIX } from './utils';
 import { useRouteHash } from '@vueuse/router';
 import CommentHeader from './CommentHeader.vue';
 const props = defineProps<{
@@ -95,8 +95,8 @@ const children = computed(()=>{
     .filter(a=>!removeList.value.find(b=>a.id===b.id))
 })
 onMounted(()=>{
-  if (hash.value && useHash) {
-    const id = hash.value.replace('#', '')
+  if (useHash && hash.value?.startsWith(HASH_PREFIX)) {
+    const id = hash.value.replace(HASH_PREFIX, '')
     if (id === props.comment.id) {
       itemRef.value.scrollIntoView({
         behavior: 'smooth',

@@ -10,11 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import { baseURL } from '@/apis/service';
 import QRCode from 'qrcode';
 const qrcode = useTemplateRef('qrcode')
 onMounted(()=>{
-  QRCode.toCanvas(qrcode.value, baseURL, {
+  QRCode.toCanvas(qrcode.value, location.origin + '/mobile', {
     width: 160, //和canvas一致
     errorCorrectionLevel: 'H',
     margin: 1

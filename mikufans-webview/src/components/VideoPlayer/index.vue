@@ -40,7 +40,7 @@ import HotKeys from './hotkeys/index.vue'
 import WatchInfo from './danmubar/WatchInfo.vue';
 import { useDefaultSettings } from './functions/settings';
 import { Events } from 'hls.js';
-const { hls, video, videoPart, videoElement, playerElement } = toRefs(useVideoStore())
+const { hls, video, videoPart, videoElement, playerElement, videoSettings } = toRefs(useVideoStore())
 const { isFullscreen, toggle } = useFullscreen(playerElement)
 onMounted(()=>{
   watchImmediate(videoPart, async part=>{
@@ -50,6 +50,7 @@ onMounted(()=>{
       hls.value?.detachMedia()
       hls.value?.destroy()
       hls.value = createHls()
+      hls.value.startLevel = videoSettings.value.level
       hls.value.loadSource(url)
       hls.value.attachMedia(videoElement.value)
       hls.value.on(Events.ERROR, (ev, data)=>{

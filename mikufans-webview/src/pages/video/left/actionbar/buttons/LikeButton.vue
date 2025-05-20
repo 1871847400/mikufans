@@ -51,22 +51,6 @@ useWindowEvent('mouseup', ()=>{
   }
   clean()
 })
-function renderAnim() {
-  let progress = triple.progress
-  if (longpress.value) {
-    progress += 0.015
-    if (progress >= 1) {
-      triple.trigger.trigger()
-      clean()
-      progress = 0
-    }
-  } else {
-    progress -= 0.015
-  }
-  triple.progress = clamp(progress, 0, 1)
-  requestAnimationFrame(renderAnim)
-}
-renderAnim()
 function handle() {
   splash({
     container: iconRef.value,
@@ -85,6 +69,24 @@ function handle() {
     like()
   }
 }
+let renderAnimId = null
+function renderAnim() {
+  let progress = triple.progress
+  if (longpress.value) {
+    progress += 0.015
+    if (progress >= 1) {
+      triple.trigger.trigger()
+      clean()
+      progress = 0
+    }
+  } else {
+    progress -= 0.015
+  }
+  triple.progress = clamp(progress, 0, 1)
+  renderAnimId = requestAnimationFrame(renderAnim)
+}
+onMounted(renderAnim)
+onUnmounted(()=>cancelAnimationFrame(renderAnimId))
 onBeforeUnmount(triple.trigger.on(handle).off)
 </script>
 
