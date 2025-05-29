@@ -20,6 +20,7 @@
         <module>service-message</module>
         <module>service-resource</module>
         <module>service-middle</module>
+        <module>service-article</module>
     </modules>
 
     <properties>

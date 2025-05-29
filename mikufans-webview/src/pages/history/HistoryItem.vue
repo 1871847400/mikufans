@@ -17,13 +17,7 @@
         <div class="watch-info">
           <i v-if="device===2" class="iconfont icon-shouji text-sm"></i>
           <i v-else class="iconfont icon-diannao text-xl"></i>
-          <span class="w-1"></span>
-          <span v-if="watchPos<1000">刚开始看</span>
-          <span v-else>
-            <span class="mr-1">看到</span>
-            <span v-if="video.bangumi">{{ part.partName }}</span>
-            <span>{{ displayDuration(watchPos) }}</span>
-          </span>
+          <span class="ml-1">{{ playPos }}</span>
           <span class="flex items-center gap-2 ml-auto">
             <user-avatar :user="video.user" size="24px"/>
             <router-link class="w-20 truncate" :to="video.user.uri" target="_blank">{{ video.user.nickname }}</router-link>
@@ -47,7 +41,7 @@ const props = defineProps<{
   data: VideoWatchHistory
   prev?: VideoWatchHistory
 }>()
-const { id, video, part, highlighted, lastWatchTime, device, watchPos, lastWatchTimeStr, uri } = props.data
+const { id, video, part, highlighted, lastWatchTime, device, watchPos, lastWatchTimeStr, uri, playPos } = props.data
 const emits = defineEmits(['remove'])
 const timetext= computed(()=>{
   const text = displayDateRange(lastWatchTime)

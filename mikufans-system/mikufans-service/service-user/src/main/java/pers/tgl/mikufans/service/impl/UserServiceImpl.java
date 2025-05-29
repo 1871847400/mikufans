@@ -146,6 +146,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         if (StrUtil.isNotBlank(params.getNickname())) {
             boolQuery.filter(QueryBuilders.matchQuery(UserDoc.Fields.nickname, params.getNickname()));
             highlightFields.add(new HighlightBuilder.Field(UserDoc.Fields.nickname)
+                    .numOfFragments(0)
                     .preTags("<em>")
                     .postTags("</em>"));
         }

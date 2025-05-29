@@ -22,6 +22,12 @@ public class VideoWatchHistoryVo extends VideoWatchHistory {
      */
     private String highlighted;
     /**
+     * 观看位置的描述
+     * 小于1秒：刚开始看
+     * 大于等于1秒：看到00:03
+     */
+    private String playPos;
+    /**
      * 访问地址
      */
     public String getUri() {

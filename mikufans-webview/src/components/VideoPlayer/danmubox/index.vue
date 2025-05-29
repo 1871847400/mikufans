@@ -35,7 +35,7 @@ watchImmediate(videoPart, ()=>{
   loadNews()
 })
 //轮询获取最新弹幕
-useIntervalFn(loadNews, 5_000)
+useIntervalFn(loadNews, 15_000)
 </script>
 
 <style scoped lang="scss">

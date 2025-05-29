@@ -11,7 +11,7 @@
     <span class="mr-auto"></span>
     <el-dropdown trigger="hover" placement="bottom-start" @command="handlers[$event]()">
       <div class="user-avatar-box">
-        <miku-image class="size-[50px] mr-1 object-cover" :res-id="sysUserStore.avatarId" avatar />
+        <miku-image class="size-[40px] mr-1 object-cover" :res-id="sysUserStore.avatarId" avatar />
         <span>{{ sysUserStore.username }}</span>
         <i class="iconfont icon-zhankai"></i>
       </div>
@@ -46,6 +46,7 @@ const handlers = {
   background-color: var(--bg0);
 }
 .user-avatar-box {
+  padding: 8px;
   display: flex;
   align-items: center;
   user-select: none;

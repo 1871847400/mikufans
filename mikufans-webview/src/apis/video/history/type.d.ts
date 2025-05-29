@@ -10,6 +10,7 @@ interface VideoWatchHistory extends BaseEntity {
   video: Video
   highlighted?: string
   uri?: string
+  playPos: string
 }
 
 interface VideoHistoryParams extends SearchParams {

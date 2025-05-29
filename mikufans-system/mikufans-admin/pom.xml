@@ -33,6 +33,11 @@
             <artifactId>service-middle</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>pers.tgl</groupId>
+            <artifactId>service-article</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>

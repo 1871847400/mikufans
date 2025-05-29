@@ -174,6 +174,7 @@ public class UserFollowServiceImpl extends BaseServiceImpl<UserFollow, UserFollo
             boolQuery.filter(QueryBuilders.matchPhraseQuery(UserDoc.Fields.nickname, params.getKeyword()));
             //高亮名称中匹配的字段
             highlightFields.add(new HighlightBuilder.Field(UserDoc.Fields.nickname)
+                    .numOfFragments(0)
                     .preTags("<em>")
                     .postTags("</em>"));
         }

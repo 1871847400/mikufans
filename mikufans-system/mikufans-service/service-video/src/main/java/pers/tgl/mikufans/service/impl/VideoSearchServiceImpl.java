@@ -90,6 +90,7 @@ public class VideoSearchServiceImpl extends BaseServiceImpl<Video, VideoMapper> 
             //只在标题中高亮搜索内容
             highlightFields.add(new HighlightBuilder.Field(VideoDoc.Fields.title)
                     .requireFieldMatch(false)
+                    .numOfFragments(0)
                     .preTags("<em>")
                     .postTags("</em>"));
         }

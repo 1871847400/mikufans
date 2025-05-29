@@ -85,7 +85,7 @@ public class UserCommentMsgServiceImpl extends BaseServiceImpl<UserCommentMsg, U
                     MessageModel source = messageService.getModel(area.getBusiType(), area.getBusiId());
                     vo.setSource(source);
                     if (source != null) {
-                        vo.setUri(source.getUri() + "#" + comment.getId());
+                        vo.setUri(source.getUri() + "#comment" + comment.getId());
                     }
                 }
             }

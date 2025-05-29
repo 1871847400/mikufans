@@ -15,6 +15,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+import pers.tgl.mikufans.domain.enums.VideoType;
 import pers.tgl.mikufans.domain.video.Video;
 import pers.tgl.mikufans.domain.video.VideoPart;
 import pers.tgl.mikufans.domain.video.VideoWatchHistory;
@@ -30,6 +31,7 @@ import pers.tgl.mikufans.util.SecurityUtils;
 import pers.tgl.mikufans.util.ServletUtils;
 import pers.tgl.mikufans.vo.VideoWatchHistoryVo;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +58,19 @@ public class VideoWatchHistoryServiceImpl extends BaseServiceImpl<VideoWatchHist
                 .eq(VideoWatchHistory::getVideoId, videoId)
                 .one(VideoWatchHistoryVo.class);
         if (vo != null) {
-            vo.setVideo(Db.getById(vo.getVideoId(), Video.class));
-            vo.setPart(Db.getById(vo.getPartId(), VideoPart.class));
+            Video video = Db.getById(vo.getVideoId(), Video.class);
+            vo.setVideo(video);
+            VideoPart part = Db.getById(vo.getPartId(), VideoPart.class);
+            vo.setPart(part);
+            if (vo.getWatchPos() < 1000) {
+                vo.setPlayPos("刚开始看");
+            } else {
+                String split = " ";
+                if (video != null && part != null && video.getType() != VideoType.VIDEO) {
+                    split = part.getPartName() + " ";
+                }
+                vo.setPlayPos("看到" + split + MyUtils.formatDuration(Duration.ofMillis(vo.getWatchPos())));
+            }
         }
         return vo;
     }
@@ -77,6 +90,7 @@ public class VideoWatchHistoryServiceImpl extends BaseServiceImpl<VideoWatchHist
             boolQuery.filter(QueryBuilders.matchQuery(VideoHistoryDoc.Fields.title, params.getTitle()));
             highlightFields.add(new HighlightBuilder.Field(VideoHistoryDoc.Fields.title)
                     .requireFieldMatch(false)
+                    .numOfFragments(0) //返回完整的标题，而非匹配到的一部分
                     .preTags("<em>")
                     .postTags("</em>"));
         }
